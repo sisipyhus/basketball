@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.1.2/dist/echarts.min.js"></script>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300,400,600' rel='stylesheet'>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet"
+          crossorigin="anonymous">
+    <link href="../static/css/pose.css" rel="stylesheet">
+    <title>AI 篮球分析</title>
+</head>
+<body>
+<nav class="navbar bg-primary" style="width: 100%; height: 8%;">
+  <div class="container-fluid">
+    <a class="navbar-brand text-white" href="#">
+      <img src="../static/img/basketball-icon.jpg" alt="Logo" width="30" height="24" class="d-inline-block align-text-top">
+      投篮手部姿势分析
+    </a>
+      <div data-bs-theme="dark">
+        <button type="button" class="btn-close" aria-label="Close" id="closeBtn"></button>
+      </div>
+  </div>
+</nav>
+<div class="load-video container-fluid bg-light" style="width: 100%; height: 92%">
+    <div class="row" style="padding: 20px;width: 100%; height: 100%;">
+    <div class="col-12" style="height:100%;">
+        <div class="card custom-card-border" style="width: 100%; height: 100%;">
+            <div class="card-body">
+                <h5 class="card-title">实时录制</h5>
+                <div class="underline bg-primary-subtle"></div>
+            </div>
+            <div class="d-flex flex-column" style="height: 100%; position: relative; ">
+                <video id="video" autoplay style="position:relative; z-index:2;height: 70%; margin:10px;"></video>
+                <div id="overlayDiv" style="position:absolute; z-index:2; top: 7%; left:32%; display:none;">
+<!--                    红色录像提示点-->
+                    <div class="spinner-grow text-danger" role="status">
+                      <span class="visually-hidden"></span>
+                    </div>
+<!--                    录像时间显示-->
+                    <p id="time">00:00</p>
+                </div>
+
+                <div class="d-flex justify-content-center" style="position:relative; z-index:2;">
+                    <button type="button" class="btn btn-primary mx-4" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
+                      开始录制
+                    </button>
+<!--                    <button onclick="startRecording()" class="btn btn-primary mx-4">开始录制</button>-->
+                    <button onclick="stopRecording()" class="btn btn-primary">停止录制</button>
+                </div>
+            </div>
+
+            <!-- Modal -->
+                    <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                      <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content">
+                          <div class="modal-header">
+                            <h1 class="modal-title fs-5" id="staticBackdropLabel">注意事项</h1>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                          </div>
+                          <div class="modal-body">
+                            请将身体右侧（投球手侧）对准镜头，确保全身关节都在取景框内，并做好动作准备。在点击确认后将立即开始录制，动作完成后请点击结束录制。
+                              全身分析所耗费的内存较大，请尽快完成动作并结束录制，以免系统卡顿。录制时间越长，分析的帧率越低。
+                          </div>
+                          <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+                            <button type="button" class="btn btn-primary" onclick="startRecording()">确认</button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+        </div>
+    </div>
+    </div>
+</div>
+</body>
+<script src="../static/js/pose_camera.js"></script>
+</html>
+

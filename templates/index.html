@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="icon" href="../static/img/basketball-icon.jpg"/>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300,400,600' rel='stylesheet'>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet"
+          crossorigin="anonymous">
+    <link href="../static/css/main.css" rel="stylesheet">
+    <title>AI 篮球分析</title>
+</head>
+<body>
+
+<nav class="navbar bg-primary" style="width: 100%; height: 8%;">
+  <div class="container-fluid">
+    <a class="navbar-brand text-white" href="#">
+      <img src="../static/img/basketball-icon.jpg" alt="Logo" width="30" height="24" class="d-inline-block align-text-top">
+      投篮姿势分析
+    </a>
+  </div>
+</nav>
+
+<div class="container-fluid bg-light" style="width: 100%; height: 92%;">
+    <div class="landing-container">
+        <div class="main-container" style="margin-top:9%;">
+            <div class="titleandbutton">
+                <div class="title">AI 篮球姿势分析</div>
+                <div class="titleinfo">机器学习 | 投篮</div>
+<!--                <div class="upload-form" style="margin-top:4%;">-->
+<!--                    <form action="/videoer" method="POST" enctype="multipart/form-data">-->
+<!--                        <div class="dropdown my-3">-->
+<!--                            <button class="btn btn-primary dropdown-toggle btn-lg" type="button"-->
+<!--                                    data-bs-toggle="dropdown" aria-expanded="false">-->
+<!--                                手部姿势分析-->
+<!--                            </button>-->
+<!--                            <ul class="dropdown-menu">-->
+<!--                                <li><a class="dropdown-item" href="#"-->
+<!--                                       onclick="document.getElementById('video_upload').click();">-->
+<!--                                    上传视频<input type="file" style="display:none;" id="video_upload" name="video"-->
+<!--                                                   onchange="form.submit()"/>-->
+<!--                                </a></li>-->
+<!--                                <li><a class="dropdown-item" href="#" onclick="redirect()">实时录制</a></li>-->
+<!--                            </ul>-->
+<!--                        </div>-->
+
+<!--                    </form>-->
+<!--                </div>-->
+
+                <div class="upload-form" style="margin-top:6%;">
+                    <form action="/shooting_pose_analysis" method="POST" enctype="multipart/form-data">
+                        <div class="dropdown">
+                            <button class="btn btn-primary dropdown-toggle btn-lg" style="width:180px;height:70px;" type="button"
+                                    data-bs-toggle="dropdown" aria-expanded="false">
+                                开始分析
+                            </button>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" href="#"
+                                       onclick="document.getElementById('body_video_upload').click();">
+                                    本地上传<input type="file" style="display:none;" id="body_video_upload" name="video"
+                                                   onchange="form.submit()"/>
+                                </a></li>
+                                <li><a class="dropdown-item" href="#" onclick="redirect_pose()">实时录制</a></li>
+                            </ul>
+                        </div>
+
+                    </form>
+                </div>
+
+<!--                <div class="upload-form" style="margin-top:1%;">-->
+<!--                    <form action="/shooting_pose_analysis" method="POST" enctype="multipart/form-data">-->
+<!--&lt;!&ndash;                        <div class="dropdown">&ndash;&gt;-->
+<!--                            <button class="btn btn-primary dropdown-toggle btn-lg" type="button"-->
+<!--                                    data-bs-toggle="dropdown" aria-expanded="false">-->
+<!--                                标准动作演示-->
+<!--                            </button>-->
+<!--&lt;!&ndash;                            <ul class="dropdown-menu">&ndash;&gt;-->
+<!--&lt;!&ndash;                                <li><a class="dropdown-item" href="#" onclick="standard_hand()">手部标准动作</a></li>&ndash;&gt;-->
+<!--&lt;!&ndash;                                <li><a class="dropdown-item" href="#" onclick="standard_pose()">全身标准动作</a></li>&ndash;&gt;-->
+<!--&lt;!&ndash;                            </ul>&ndash;&gt;-->
+<!--&lt;!&ndash;                        </div>&ndash;&gt;-->
+<!--                    </form>-->
+<!--                </div>-->
+
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"
+        crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"
+        crossorigin="anonymous"></script>
+</body>
+<script>
+function redirect(){
+  fetch('/current-video')
+    .then(response => {
+      window.location.href = '/current-video';
+  });
+}
+
+function redirect_pose(){
+  fetch('/current-pose-video')
+    .then(response => {
+      window.location.href = '/current-pose-video';
+  });
+}
+
+function standard_pose(){
+  fetch('/standard_pose')
+    .then(response => {
+      window.location.href = '/standard_pose';
+  });
+}
+
+function standard_hand(){
+  fetch('/standard_hand')
+    .then(response => {
+      window.location.href = '/standard_hand';
+  });
+}
+</script>
+</html>
+

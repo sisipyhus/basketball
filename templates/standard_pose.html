@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>全身姿势分析</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"
+        crossorigin="anonymous"></script>
+    <script src="../static/js/shooting_pose_analysis.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.1.2/dist/echarts.min.js"></script>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300,400,600' rel='stylesheet'>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet"
+          crossorigin="anonymous">
+    <link href="../static/css/pose.css" rel="stylesheet">
+</head>
+<body>
+<nav class="navbar bg-primary" style="width: 100%; height: 8%;">
+  <div class="container-fluid">
+    <a class="navbar-brand text-white" href="#">
+      <img src="../static/img/basketball-icon.jpg" alt="Logo" width="30" height="24" class="d-inline-block align-text-top">
+      投篮全身姿势分析
+    </a>
+      <div data-bs-theme="dark">
+        <button type="button" class="btn-close" aria-label="Close" id="closeBtn"></button>
+      </div>
+  </div>
+</nav>
+<div class="container-fluid bg-light" style="width: 100%; height: 92%;">
+  <div class="row" style="padding: 20px;width: 100%; height: 100%;">
+    <div class="col-3">
+        <div class="card custom-card-border" style="width: 100%; height: 100%;">
+            <div class="card-body">
+                <h5 class="card-title">实时分析</h5>
+                <div class="underline bg-primary-subtle"></div>
+            </div>
+            <img id="video" src="{{ url_for('video_feed') }}" class="card-img-top" style="width: 100%; height:100%; object-fit:contain;">
+        </div>
+    </div>
+      <div class="col-4">
+        <div class="card custom-card-border" style="width: 100%; height: 100%;">
+            <div class="card-body">
+                <h5 class="card-title">角度趋势</h5>
+                <div class="underline bg-primary-subtle"></div>
+            </div>
+                <div id="chart-container" class="d-flex flex-column justify-content-center align-items-center" style="width: 100%; height:100%;">
+                    <div class="spinner-border text-secondary m-3" role="status"></div>
+                    <span>请等待视频分析结束...</span>
+                </div>
+        </div>
+    </div>
+    <div class="col-5">
+        <div class="card custom-card-border" style="width: 100%; height: 100%;">
+            <div class="card-body">
+                <h5 class="card-title">数据结果</h5>
+                <div class="underline bg-primary-subtle"></div>
+            </div>
+            <div class="d-flex flex-column" style="height: 100%;">
+                <div class="flex-fill" style="height: 100%;">
+                    <ul class="list-group list-group-horizontal d-flex" style="height: 100%;">
+                        <li class="list-group-item flex-fill" style="height: 100%;">
+                            <div class="stat-item">
+                                <div class="statname-container">
+                                    <div class="stat-name">最小手肘角度</div>
+                                    <div class="long-underline bg-primary-subtle"></div>
+                                </div>
+                                <div class="num-container">
+                                    <div class="stat-num d-flex align-items-center">
+                                        <p id="elbow_min_angle" class="fs-5">---°</p>
+                                    </div>
+                                    <div class="stat-score d-flex align-items-center">
+                                        <p id="elbow_min_angle_score" class="fs-7 fst-italic">待评价</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                        <li class="list-group-item flex-fill">
+                            <div class="stat-item">
+                                <div class="statname-container">
+                                    <div class="stat-name">最大手肘角度</div>
+                                    <div class="long-underline bg-primary-subtle"></div>
+                                </div>
+                                <div class="num-container">
+                                    <div class="stat-num d-flex align-items-center">
+                                        <p id="elbow_max_angle" class="fs-5">---°</p>
+                                    </div>
+                                    <div class="stat-score d-flex align-items-center">
+                                        <p id="elbow_max_angle_score" class="fs-7 fst-italic">待评价</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                        <li class="list-group-item flex-fill">
+                            <div class="stat-item">
+                                <div class="statname-container">
+                                    <div class="stat-name">投篮手肘角度</div>
+                                    <div class="long-underline bg-primary-subtle"></div>
+                                </div>
+                                <div class="num-container">
+                                    <div class="stat-num d-flex align-items-center">
+                                        <p id="release_elbow_angle" class="fs-5">---°</p>
+                                    </div>
+                                    <div class="stat-score d-flex align-items-center">
+                                        <p id="release_elbow_angle_score" class="fs-7 fst-italic">待评价</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                        <li class="list-group-item flex-fill">
+                            <div class="stat-item">
+                                <div class="statname-container">
+                                    <div class="stat-name">手肘伸展时间</div>
+                                    <div class="long-underline bg-primary-subtle"></div>
+                                </div>
+                                <div class="num-container">
+                                    <div class="stat-num d-flex align-items-center">
+                                        <p id="elbow_time_diff" class="fs-5">---秒</p>
+                                    </div>
+                                    <div class="stat-score d-flex align-items-center">
+                                        <p id="elbow_time_diff_score" class="fs-7 fst-italic">待评价</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+
+
+                <div class="flex-fill" style="height: 100%;">
+                    <ul class="list-group list-group-horizontal d-flex" style="height: 100%;">
+                        <li class="list-group-item flex-fill">
+                            <div class="stat-item">
+                                <div class="statname-container">
+                                    <div class="stat-name">最小肩膀角度</div>
+                                    <div class="long-underline bg-primary-subtle"></div>
+                                </div>
+                                <div class="num-container">
+                                    <div class="stat-num d-flex align-items-center">
+                                        <p id="shoulder_min_angle" class="fs-5">---°</p>
+                                    </div>
+                                    <div class="stat-score d-flex align-items-center">
+                                        <p id="shoulder_min_angle_score" class="fs-7 fst-italic">待评价</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                        <li class="list-group-item flex-fill">
+                            <div class="stat-item">
+                                <div class="statname-container">
+                                    <div class="stat-name">最大肩膀角度</div>
+                                    <div class="long-underline bg-primary-subtle"></div>
+                                </div>
+                                <div class="num-container">
+                                    <div class="stat-num d-flex align-items-center">
+                                        <p id="shoulder_max_angle" class="fs-5">---°</p>
+                                    </div>
+                                    <div class="stat-score d-flex align-items-center">
+                                        <p id="shoulder_max_angle_score" class="fs-7 fst-italic">待评价</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                        <li class="list-group-item flex-fill">
+                            <div class="stat-item">
+                                <div class="statname-container">
+                                    <div class="stat-name">投篮肩膀角度</div>
+                                    <div class="long-underline bg-primary-subtle"></div>
+                                </div>
+                                <div class="num-container">
+                                    <div class="stat-num d-flex align-items-center">
+                                        <p id="release_shoulder_angle" class="fs-5">---°</p>
+                                    </div>
+                                    <div class="stat-score d-flex align-items-center">
+                                        <p id="release_shoulder_angle_score" class="fs-7 fst-italic">待评价</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                        <li class="list-group-item flex-fill">
+                            <div class="stat-item">
+                                <div class="statname-container">
+                                    <div class="stat-name">肩膀伸展时间</div>
+                                    <div class="long-underline bg-primary-subtle"></div>
+                                </div>
+                                <div class="num-container">
+                                    <div class="stat-num d-flex align-items-center">
+                                        <p id="shoulder_time_diff" class="fs-5">---秒</p>
+                                    </div>
+                                    <div class="stat-score d-flex align-items-center">
+                                        <p id="shoulder_time_diff_score" class="fs-7 fst-italic">待评价</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="flex-fill" style="height: 100%;">
+                    <ul class="list-group list-group-horizontal d-flex" style="height: 100%;">
+                        <li class="list-group-item flex-fill">
+                            <div class="stat-item">
+                                <div class="statname-container">
+                                    <div class="stat-name">最小膝盖角度</div>
+                                    <div class="long-underline bg-primary-subtle"></div>
+                                </div>
+                                <div class="num-container">
+                                    <div class="stat-num d-flex align-items-center">
+                                        <p id="knee_min_angle" class="fs-5">---°</p>
+                                    </div>
+                                    <div class="stat-score d-flex align-items-center">
+                                        <p id="knee_min_angle_score" class="fs-7 fst-italic">待评价</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                        <li class="list-group-item flex-fill">
+                            <div class="stat-item">
+                                <div class="statname-container">
+                                    <div class="stat-name">最大膝盖角度</div>
+                                    <div class="long-underline bg-primary-subtle"></div>
+                                </div>
+                                <div class="num-container">
+                                    <div class="stat-num d-flex align-items-center">
+                                        <p id="knee_max_angle" class="fs-5">---°</p>
+                                    </div>
+                                    <div class="stat-score d-flex align-items-center">
+                                        <p id="knee_max_angle_score" class="fs-7 fst-italic">待评价</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                        <li class="list-group-item flex-fill">
+                            <div class="stat-item">
+                                <div class="statname-container">
+                                    <div class="stat-name">投篮膝盖角度</div>
+                                    <div class="long-underline bg-primary-subtle"></div>
+                                </div>
+                                <div class="num-container">
+                                    <div class="stat-num d-flex align-items-center">
+                                        <p id="release_knee_angle" class="fs-5">---°</p>
+                                    </div>
+                                    <div class="stat-score d-flex align-items-center">
+                                        <p id="release_knee_angle_score" class="fs-7 fst-italic">待评价</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                        <li class="list-group-item flex-fill">
+                            <div class="stat-item">
+                                <div class="statname-container">
+                                    <div class="stat-name">膝盖伸展时间</div>
+                                    <div class="long-underline bg-primary-subtle"></div>
+                                </div>
+                                <div class="num-container">
+                                    <div class="stat-num d-flex align-items-center">
+                                        <p id="knee_time_diff" class="fs-5">---秒</p>
+                                    </div>
+                                    <div class="stat-score d-flex align-items-center">
+                                        <p id="knee_time_diff_score" class="fs-7 fst-italic">待评价</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+
+                    <div class="flex-fill" style="height: 100%;">
+                        <ul class="list-group list-group-horizontal d-flex" style="height: 100%;">
+                            <li class="list-group-item flex-fill">
+                                <div class="stat-item">
+                                    <div class="statname-container">
+                                        <div class="stat-name">最小脚踝角度</div>
+                                        <div class="long-underline bg-primary-subtle"></div>
+                                    </div>
+                                    <div class="num-container">
+                                        <div class="stat-num d-flex align-items-center">
+                                            <p id="ankle_min_angle" class="fs-5">---°</p>
+                                        </div>
+                                        <div class="stat-score d-flex align-items-center">
+                                            <p id="ankle_min_angle_score" class="fs-7 fst-italic">待评价</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </li>
+                            <li class="list-group-item flex-fill">
+                                <div class="stat-item">
+                                    <div class="statname-container">
+                                        <div class="stat-name">最大脚踝角度</div>
+                                        <div class="long-underline bg-primary-subtle"></div>
+                                    </div>
+                                    <div class="num-container">
+                                        <div class="stat-num d-flex align-items-center">
+                                            <p id="ankle_max_angle" class="fs-5">---°</p>
+                                        </div>
+                                        <div class="stat-score d-flex align-items-center">
+                                            <p id="ankle_max_angle_score" class="fs-7 fst-italic">待评价</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </li>
+                            <li class="list-group-item flex-fill">
+                                <div class="stat-item">
+                                    <div class="statname-container">
+                                        <div class="stat-name">投篮脚踝角度</div>
+                                        <div class="long-underline bg-primary-subtle"></div>
+                                    </div>
+                                    <div class="num-container">
+                                        <div class="stat-num d-flex align-items-center">
+                                            <p id="release_ankle_angle" class="fs-5">---°</p>
+                                        </div>
+                                        <div class="stat-score d-flex align-items-center">
+                                            <p id="release_ankle_angle_score" class="fs-7 fst-italic">待评价</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </li>
+                            <li class="list-group-item flex-fill">
+                                <div class="stat-item">
+                                    <div class="statname-container">
+                                        <div class="stat-name">脚踝伸展时间</div>
+                                        <div class="long-underline bg-primary-subtle"></div>
+                                    </div>
+                                    <div class="num-container">
+                                        <div class="stat-num d-flex align-items-center">
+                                            <p id="ankle_time_diff" class="fs-5">---秒</p>
+                                        </div>
+                                        <div class="stat-score d-flex align-items-center">
+                                            <p id="ankle_time_diff_score" class="fs-7 fst-italic">待评价</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+
+
+            <div class="flex-fill" style="height: 100%;">
+                <ul class="list-group list-group-horizontal d-flex" style="height: 100%;">
+                    <li class="list-group-item flex-fill">
+                        <div class="stat-item">
+                            <div class="statname-container">
+                                <div class="stat-name">上下肢发力时间差</div>
+                                <div class="long-underline bg-primary-subtle"></div>
+                            </div>
+                            <div class="num-container">
+                                <div class="stat-num d-flex align-items-center">
+                                    <p id="time_diff" class="fs-5">---秒</p>
+                                </div>
+                                <div class="stat-score d-flex align-items-center">
+                                    <p id="time_diff_score" class="fs-7 fst-italic">待评价</p>
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+                    <li class="list-group-item flex-fill">
+                        <div class="stat-item">
+                            <div class="statname-container">
+                                <div class="stat-name">发球速度</div>
+                                <div class="long-underline bg-primary-subtle"></div>
+                            </div>
+                            <div class="num-container">
+                                <div class="stat-num d-flex align-items-center">
+                                    <p id="ball_speed" class="fs-5">---</p>
+                                </div>
+                                <div class="stat-score d-flex align-items-center">
+                                    <p id="ball_speed_score" class="fs-7 fst-italic">待评价</p>
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+
+
+            </div>
+        </div>
+
+    </div>
+  </div>
+</div>
+</body>
+</html>
