@@ -44,15 +44,6 @@ python app.py
     <img src="./static/img/index_page.jpg" width="551.1" height="278.7">
 </p>
 
-#### Alternatives
-
-
-## Project Structure
-
-<p align=center>
-    <img src="./static/img/structure.png">
-</p>
-
 ## 功能
 
 本项目的主要功能是分析投篮姿势（站立投篮）的姿势是否标准。
