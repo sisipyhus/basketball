@@ -1,0 +1,6 @@
+flask
+ultralytics
+scikit-learn
+PIL
+Pillow
+opencv-python
